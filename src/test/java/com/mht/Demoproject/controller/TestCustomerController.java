@@ -40,7 +40,8 @@ public class TestCustomerController {
 		CustomerDTO customerDTO = new CustomerDTO("mohit", "mohit@123", "mohit@xyz.com");
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/customer")
-										.content(objectMapper.writeValueAsBytes(customerDTO))
+										.content(objectMapper.writeValueAsString(customerDTO))
+										.contentType(MediaType.APPLICATION_JSON)
 										.accept(MediaType.TEXT_PLAIN);
 		
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();

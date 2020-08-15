@@ -51,6 +51,7 @@ public class SellerController {
 		return ResponseEntity.ok("Seller's email id updated successfully");
 	}
 	
+//	http://localhost:8600/seller/abc?version=1
 	@GetMapping(value = "/{username}" ,params = "version=1")
 	public ResponseEntity<SellerDTO> getSellerDetails(@PathVariable(value = "username") String username) throws Exception{
 		SellerDTO sellerDTO = sellerService.getSellerDetails(username);
@@ -59,6 +60,7 @@ public class SellerController {
 	
 	/**
 	 * Just added to illustrate api versioning using request parameter
+	 * http://localhost:8600/seller/abc?version=2
 	 * @param mohit
 	 * @return
 	 * @throws Exception

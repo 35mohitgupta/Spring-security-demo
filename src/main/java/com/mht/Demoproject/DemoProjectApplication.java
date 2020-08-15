@@ -17,6 +17,14 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * swagger-ui -> http://localhost:8600/swagger-ui.html
+ * swagger-docs -> http://localhost:8600/v2/api-docs
+ * @author mohit
+ *
+ */
+
+
 @SpringBootApplication
 @EnableSwagger2
 public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
@@ -61,11 +69,18 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.mht.Demoproject.controller"))
-				.paths(PathSelectors.any())
-				.build().useDefaultResponseMessages(false); //For disabling response messages
+//		return new Docket(DocumentationType.SWAGGER_2)
+//				.select()
+//				.apis(RequestHandlerSelectors.basePackage("com.mht.Demoproject.controller"))
+//				.paths(PathSelectors.any())
+//				.build();
+//				.useDefaultResponseMessages(false); //For disabling response messages
+		 return new Docket(DocumentationType.SWAGGER_2)  
+		          .select()                                  
+		          .apis(RequestHandlerSelectors.any())              
+		          .paths(PathSelectors.any())                          
+		          .build();        
+		
 	}
 
 }

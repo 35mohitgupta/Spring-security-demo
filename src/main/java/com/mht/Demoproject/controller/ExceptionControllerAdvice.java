@@ -4,14 +4,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.mht.Demoproject.exceptions.CustomerAlreadyExists;
 import com.mht.Demoproject.exceptions.CustomerNotFoundException;
 import com.mht.Demoproject.exceptions.ErrorMessage;
 import com.mht.Demoproject.exceptions.LoginException;
 import com.mht.Demoproject.exceptions.SellerAlreadyExists;
+import com.mht.Demoproject.exceptions.SellerNotFoundException;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.mht.Demoproject.controller")
 public class ExceptionControllerAdvice {
 
 	@ExceptionHandler(CustomerAlreadyExists.class)
@@ -20,8 +22,8 @@ public class ExceptionControllerAdvice {
 		return ResponseEntity.ok(errorMessage);
 	}
 	
-	@ExceptionHandler(CustomerNotFoundException.class)
-	public ResponseEntity<ErrorMessage>  customerNotFoundExceptionHandler(CustomerAlreadyExists exception){
+	@ExceptionHandler(value =  {CustomerNotFoundException.class})
+	public ResponseEntity<ErrorMessage>  customerNotFoundExceptionHandler(CustomerNotFoundException exception){
 		ErrorMessage errorMessage = new ErrorMessage(exception.getMessage(), HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.ok(errorMessage);
 	}
@@ -38,7 +40,8 @@ public class ExceptionControllerAdvice {
 		return ResponseEntity.ok(errorMessage);
 	}
 	
-	public ResponseEntity<ErrorMessage>  sellerNotFoundExceptionHandler(SellerAlreadyExists exception){
+	@ExceptionHandler(SellerNotFoundException.class)
+	public ResponseEntity<ErrorMessage>  sellerNotFoundExceptionHandler(SellerNotFoundException exception){
 		ErrorMessage errorMessage = new ErrorMessage(exception.getMessage(), HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.ok(errorMessage);
 	}
