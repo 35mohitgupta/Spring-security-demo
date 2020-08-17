@@ -44,10 +44,10 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-		auth.inMemoryAuthentication()
+		auth.inMemoryAuthentication() //in-momory approach
 			.withUser("mht").password("{noop}mht").roles("USER").authorities("ROLE_USER")
 			.and()
-			.withUser("gpt").password("{noop}gpt").roles("EMPLOYEE").authorities("ROLE_EMPLOYEE");
+			.withUser("gpt").password("{noop}gpt").roles("SELLER").authorities("ROLE_SELLER");
 	}
 	
 	/**
@@ -59,13 +59,16 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	 *  - configure concurrent session management
 	 *  - configure URL based security on basis of ROLES
 	 *  
-	 *  Current Implementation --> This method provide access to user with role employee only
+	 *  Current Implementation --> This method provide access to user with role employee only using form-login
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/**").hasAnyRole("EMPLOYEE")
-			.anyRequest().authenticated()
+			.antMatchers("/customer/**").permitAll() //gives access to /customer/* with any login
+			.antMatchers("/**").hasAnyRole("SELLER") // only the user with seller role can access the whole endpoints others will get NOT_FOUND
+			.anyRequest().authenticated() // every request except the /customer/* will need authentication
+			.and().exceptionHandling()
+			.accessDeniedPage("/accessDenied") //if access is denied the redirect the user to this page
 			.and().formLogin();
 	}
 	
