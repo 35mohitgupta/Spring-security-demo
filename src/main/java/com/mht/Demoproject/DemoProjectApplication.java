@@ -32,49 +32,52 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	public static void main(String[] args) {
 		SpringApplication.run(DemoProjectApplication.class, args);
 	}
+	
+	
 	/**
-	 * Configure username and password and authorities
+	 * This method provide configuration about how to authenticate application user
+	 *   
+	 * Current implementation -->> in-memory authentication details - username and password and role
 	 * @param auth
 	 * @throws Exception
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
 		auth.inMemoryAuthentication()
-			.withUser("mohit").password(passwordEncoder().encode("mht"))
+			.withUser("mht").password("{noop}mht").roles("USER")
+			.and()
+			.withUser("gpt").password("{noop}gpt").roles("EMPLOYEE")
 			.authorities("ROLE_USER");
 	}
 	
 	/**
 	 * Configuring the HttpSecurity
+	 * This method provide information to spring security about - 
+	 * 	- which requests to authenticate
+	 *  - whether to support form-based or http-basic authentication
+	 *  - configure secure logout feature
+	 *  - configure concurrent session management
+	 *  - configure URL based security on basis of ROLES
+	 *  
+	 *  AS of now this method contain default implementation of Spring Security
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/customer").permitAll() //URL starting with customer need to be authenticated
-			.anyRequest().authenticated() // rest of the URLs should be authenticated
-			.and()
-			.httpBasic().and() //Every request should be authenticated it should not store in a session
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
-			.and().csrf().disable();
+			.anyRequest().authenticated()
+			.and().formLogin()
+			.and().httpBasic();
 	}
 	
+	
+
+	
 	/**
-	 * Password Encoder to be used.
+	 * It configures the SwaggerUI
 	 * @return
 	 */
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
 	public Docket api() {
-//		return new Docket(DocumentationType.SWAGGER_2)
-//				.select()
-//				.apis(RequestHandlerSelectors.basePackage("com.mht.Demoproject.controller"))
-//				.paths(PathSelectors.any())
-//				.build();
-//				.useDefaultResponseMessages(false); //For disabling response messages
 		 return new Docket(DocumentationType.SWAGGER_2)  
 		          .select()                                  
 		          .apis(RequestHandlerSelectors.any())              
