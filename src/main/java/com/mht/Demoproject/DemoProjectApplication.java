@@ -49,7 +49,9 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-		auth.jdbcAuthentication().dataSource(dataSource);
+		auth.jdbcAuthentication().dataSource(dataSource) // specify JDBC authentication to Spring security by injecting the required datasource bean 
+		.usersByUsernameQuery("select username,password,enabled from users where username=?") //query statements to fetch the user details from the database.
+		.authoritiesByUsernameQuery("select username, role from user_roles where username=?"); //query statements to fetch the user role details from the database.
 	}
 	
 	/**
