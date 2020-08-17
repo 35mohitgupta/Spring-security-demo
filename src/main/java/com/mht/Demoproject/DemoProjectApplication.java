@@ -1,5 +1,7 @@
 package com.mht.Demoproject;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +31,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 
+	@Autowired
+	private DataSource dataSource;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(DemoProjectApplication.class, args);
 	}
@@ -37,17 +42,14 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	/**
 	 * This method provide configuration about how to authenticate application user
 	 *   
-	 * Current implementation -->> in-memory authentication details - username and password and role
+	 * Current implementation -->> database authentication with default tables
 	 * As of now I think authorities() is the mandatory parameter other wise it will give 403 error
 	 * @param auth
 	 * @throws Exception
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-		auth.inMemoryAuthentication() //in-momory approach
-			.withUser("mht").password("{noop}mht").roles("USER").authorities("ROLE_USER")
-			.and()
-			.withUser("gpt").password("{noop}gpt").roles("SELLER").authorities("ROLE_SELLER");
+		auth.jdbcAuthentication().dataSource(dataSource);
 	}
 	
 	/**
@@ -67,9 +69,8 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 			.antMatchers("/customer/**").permitAll() //gives access to /customer/* with any login
 			.antMatchers("/**").hasAnyRole("SELLER") // only the user with seller role can access the whole endpoints others will get NOT_FOUND
 			.anyRequest().authenticated() // every request except the /customer/* will need authentication
-			.and().exceptionHandling()
-			.accessDeniedPage("/accessDenied") //if access is denied the redirect the user to this page
-			.and().formLogin();
+			.and().formLogin()
+			;
 	}
 	
 	
