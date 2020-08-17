@@ -38,16 +38,16 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	 * This method provide configuration about how to authenticate application user
 	 *   
 	 * Current implementation -->> in-memory authentication details - username and password and role
+	 * As of now I think authorities() is the mandatory parameter other wise it will give 403 error
 	 * @param auth
 	 * @throws Exception
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
 		auth.inMemoryAuthentication()
-			.withUser("mht").password("{noop}mht").roles("USER")
+			.withUser("mht").password("{noop}mht").roles("USER").authorities("ROLE_USER")
 			.and()
-			.withUser("gpt").password("{noop}gpt").roles("EMPLOYEE")
-			.authorities("ROLE_USER");
+			.withUser("gpt").password("{noop}gpt").roles("EMPLOYEE").authorities("ROLE_EMPLOYEE");
 	}
 	
 	/**
@@ -59,14 +59,14 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	 *  - configure concurrent session management
 	 *  - configure URL based security on basis of ROLES
 	 *  
-	 *  AS of now this method contain default implementation of Spring Security
+	 *  Current Implementation --> This method provide access to user with role employee only
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
+			.antMatchers("/**").hasAnyRole("EMPLOYEE")
 			.anyRequest().authenticated()
-			.and().formLogin()
-			.and().httpBasic();
+			.and().formLogin();
 	}
 	
 	
