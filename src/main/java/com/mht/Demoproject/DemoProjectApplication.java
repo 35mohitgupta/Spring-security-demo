@@ -78,10 +78,14 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	 *  - configure concurrent session management
 	 *  - configure URL based security on basis of ROLES
 	 *  
-	 *  Current Implementation --> This method provide access to user with role employee only using form-login
+	 *  Current Implementation --> This method provide access to user with role SELLER only using form-login
+	 *  NOTE - we are using self-signed certificate so we can't access this using any standard browser
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
+		http.requiresChannel().anyRequest().requiresSecure(); //compulsate any request to be using https protocol
+		
 		http.authorizeRequests()
 			.antMatchers("/customer/**").permitAll() //gives access to /customer/* with any login
 			.antMatchers("/**").hasAnyRole("SELLER") // only the user with seller role can access the whole endpoints others will get NOT_FOUND
