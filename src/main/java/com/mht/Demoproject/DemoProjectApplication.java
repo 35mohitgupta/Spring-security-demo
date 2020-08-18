@@ -40,17 +40,32 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	
 	
 	/**
+	 * Methos returning BCryptPasswordEncoder object
+	 * Can be a bean method if passwordEncoder is also used somewhere else
+	 * @return
+	 */
+	 public BCryptPasswordEncoder passwordEncoder() {
+	        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+	        return bCryptPasswordEncoder;
+	 }
+	
+	/**
 	 * This method provide configuration about how to authenticate application user
 	 *   
-	 * Current implementation -->> database authentication with default tables
-	 * As of now I think authorities() is the mandatory parameter other wise it will give 403 error
+	 * Current implementation -->> database authentication with user-defined tables and password encoder
+	 * As of now there is some issue 
 	 * @param auth
 	 * @throws Exception
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
+		
+		String encodedValue = passwordEncoder().encode("ram");
+		System.out.println(">>>>> encoded value: "+encodedValue);
+		System.out.println(">>> matcher : "+passwordEncoder().matches("ram", encodedValue));
 		auth.jdbcAuthentication().dataSource(dataSource) // specify JDBC authentication to Spring security by injecting the required datasource bean 
-		.usersByUsernameQuery("select username,password,enabled from users where username=?") //query statements to fetch the user details from the database.
+		.passwordEncoder(passwordEncoder()) //using passwordEncoder to encode password
+		.usersByUsernameQuery("select username,password,enabled from users1 where username=?") //query statements to fetch the user details from the database.
 		.authoritiesByUsernameQuery("select username, role from user_roles where username=?"); //query statements to fetch the user role details from the database.
 	}
 	
@@ -91,5 +106,7 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 		          .build();        
 		
 	}
+	
+	
 
 }
