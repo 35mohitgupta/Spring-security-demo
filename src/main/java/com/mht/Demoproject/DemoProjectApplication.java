@@ -84,7 +84,9 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		http.requiresChannel().anyRequest().requiresSecure(); //compulsate any request to be using https protocol
+//		http.requiresChannel().anyRequest().requiresSecure(); //compulsate any request to be using https protocol
+		
+		http.sessionManagement().maximumSessions(1); //one user can have atmost 1 concurrent session
 		
 		http.authorizeRequests()
 			.antMatchers("/customer/**").permitAll() //gives access to /customer/* with any login
