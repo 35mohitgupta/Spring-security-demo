@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,6 +63,7 @@ public class CustomerController {
 		return ResponseEntity.ok("Customer's email id updated successfully");
 	}
 	
+	@Secured("ROLE_SELLER")  // Only user with seller role is allowed
 	@GetMapping(value = "/{username}")
 	public ResponseEntity<CustomerDTO> getCustomerDetails(@PathVariable(value = "username") String username) throws Exception{
 		CustomerDTO customerDTO = customerService.getCustomer(username);

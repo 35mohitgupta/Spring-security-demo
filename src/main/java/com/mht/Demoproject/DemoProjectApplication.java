@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,6 +30,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @SpringBootApplication
+@EnableGlobalMethodSecurity(securedEnabled = true) //To enable @Secured = true
 @EnableSwagger2
 public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 
@@ -40,7 +43,7 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	
 	
 	/**
-	 * Methos returning BCryptPasswordEncoder object
+	 * Method returning BCryptPasswordEncoder object
 	 * Can be a bean method if passwordEncoder is also used somewhere else
 	 * @return
 	 */
@@ -78,7 +81,7 @@ public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 	 *  - configure concurrent session management
 	 *  - configure URL based security on basis of ROLES
 	 *  
-	 *  Current Implementation --> This method provide access to user with role SELLER only using form-login
+	 *  Current Implementation --> This method provide access to /seller/* to user with role SELLER only using form-login
 	 *  NOTE - we are using self-signed certificate so we can't access this using any standard browser
 	 */
 	@Override
