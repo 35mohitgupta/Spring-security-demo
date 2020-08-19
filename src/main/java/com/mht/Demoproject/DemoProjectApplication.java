@@ -30,7 +30,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @SpringBootApplication
-@EnableGlobalMethodSecurity(securedEnabled = true) //To enable @Secured = true
+@EnableGlobalMethodSecurity(prePostEnabled = true) //To enable @Secured = true
 @EnableSwagger2
 public class DemoProjectApplication extends WebSecurityConfigurerAdapter{
 
